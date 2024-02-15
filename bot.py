@@ -1,88 +1,111 @@
 import telebot
 import time
 
+
 from telebot import types
 from random import choice
 
 
 from src.conf.config import settings
+from src.data.message import GREERING, RULES
+from src.data.words.simple_words import SIMPLE_WORDS
+from src.model.markup import markup
+from src.model.team import TEAM_1, TEAM_2
+
 
 BOT_TOKEN = settings.bot_token
 bot = telebot.TeleBot(BOT_TOKEN)
 
-RULES = """
-ШВИДКІ ПРАВИЛА
-1. Команди пояснюють слова по черзі. Гравці в командах теж
-пояснюють слова по черзі.
-2. Кількість правильно вгаданих слів = кількість кроків
-вперед по ігровому полю.
-3. Кількість помилок та пропущених слів = кількість кроків
-назад по ігровому полю.
-4. Всі кружки на доріжці ігрового поля пронумеровані від 1 до
-8. Цифра, на якій стоїть фігурка вашої команди, вказує на
-номер слова, яке треба пояснити.
-5. В раунді «Вечірка» слова треба пояснювати незвичними
-способами.
-6. Команда, яка успішно справилася із завданням в раунді
-«Вечірка», крутить стрілку та отримує додаткову кількість
-кроків вперед.
-7. Перемагає команда, яка першою дісталася фінішу!
-"""
-
 round_timer = 60
-WORDS = [
-    "Протон",
-    "Земля",
-    "Сонце",
-    "Вікно",
-    "Програма",
-    "Ножиці",
-]
+
 
 @bot.message_handler(commands=['start', 'hello'])
 def start(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton('Правила гри')
-    btn2 = types.KeyboardButton('Нова гра')
-    btn3 = types.KeyboardButton('Налаштування')
-    markup.add(btn1, btn2, btn3)
-    bot.send_message(message.from_user.id, 'Вітаємо в грі Alias українською!!!', reply_markup=markup)
+    bot.send_message(message.chat.id, GREERING, reply_markup=markup.main_menu())
 
 
 @bot.message_handler(content_types=['text'])
-def rules(message):
-    if message.text == 'Правила гри':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton('Назад')
-        markup.add(btn1)
-        bot.send_message(message.from_user.id, RULES, reply_markup=markup)
-        start(message)
-    if message.text == 'Нова гра':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn_next_words = types.KeyboardButton('Наступне слово')
-        markup.add(btn_next_words)
-        timeout = time.time() + 60
-        bot.send_message(message.from_user.id, choice(WORDS), reply_markup=markup)
-    if message.text == 'Наступне слово':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn_next_words = types.KeyboardButton('Наступне слово')
-        markup.add(btn_next_words)
-        bot.send_message(message.from_user.id, choice(WORDS), reply_markup=markup)
+def main_menu(message):
+    if message.text == '📖 Правила гри':
+        bot.send_message(message.chat.id, RULES)
+    if message.text == '🎲 Нова гра':
+        bot.send_message(
+            message.chat.id,
+            f"Назви команд:"
+        )
+        bot.send_message(
+            message.chat.id,
+            f"{TEAM_1.team_name}"
+        )
+        bot.send_message(
+            message.chat.id,
+            f"{TEAM_2.team_name}"
+        )
+        # bot.send_mess
+        bot.send_message(
+            message.chat.id,
+            f"Також ви можете змінити назву команд!",
+            reply_markup=markup.choice_team_name()
+        )
+    if message.text == 'Змінити назву для першої команди':
+        TEAM_1.current_change_name = True
+        TEAM_2.current_change_name = False
+        bot.send_message(
+            message.chat.id,
+            f"Оберіть тваринку та опис для неї:",
+            reply_markup=markup.choice_list()
+        )
+    if message.text == 'Змінити назву для другої команди':
+        TEAM_1.current_change_name = False
+        TEAM_2.current_change_name = True
+        bot.send_message(
+            message.chat.id,
+            f"Оберіть тваринку та опис для неї:",
+            reply_markup=markup.choice_list()
+        )
 
 
-@bot.message_handler(content_types=['text'])
-def start_game(message):
-    if message.text == 'Нова гра':
+@bot.callback_query_handler(func=lambda callback: True)
+def callback_change_team_name_animal(callback):
+    if 'change_team_name_animal' in callback.data and TEAM_1.current_change_name:
+        TEAM_1.change_animal(callback.data.split('|', maxsplit=1)[1])
+        bot.send_message(
+            callback.message.chat.id,
+            f"TEAM_1 = {TEAM_1.team_name}"
+        )
+    if 'change_team_name_animal' in callback.data and TEAM_2.current_change_name == True:
+        TEAM_2.change_animal(callback.data.split('|', maxsplit=1)[1])
+        bot.send_message(
+            callback.message.chat.id,
+            f"TEAM_2 = {TEAM_2.team_name}"
+        )
+    if 'change_team_name_descr' in callback.data and TEAM_1.current_change_name:
+        TEAM_1.change_description(callback.data.split('|', maxsplit=1)[1])
+        bot.send_message(
+            callback.message.chat.id,
+            f"TEAM_1 = {TEAM_1.team_name}"
+        )
+    if 'change_team_name_descr' in callback.data and TEAM_2.current_change_name == True:
+        TEAM_2.change_description(callback.data.split('|', maxsplit=1)[1])
+        bot.send_message(
+            callback.message.chat.id,
+            f"TEAM_2 = {TEAM_2.team_name}"
+        )
+
+
+# @bot.message_handler(content_types=['text'])
+# def start_game(message):
+#     if message.text == 'Нова гра':
         # markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         # btn_next_words = types.KeyboardButton('Наступне слово')
         # markup.add(btn_next_words)
-        timeout = time.time() + 60
-        while time.time() < timeout:
-            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            btn_next_words = types.KeyboardButton('Наступне слово')
-            markup.add(btn_next_words)
-            bot.send_message(message.from_user.id, choice(WORDS), reply_markup=markup)
+        # timeout = time.time() + 60
+        # while time.time() < timeout:
+        #     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        #     btn_next_words = types.KeyboardButton('Наступне слово')
+        #     markup.add(btn_next_words)
+        #     bot.send_message(message.from_user.id, choice(WORDS), reply_markup=markup)
 
 
 if __name__ == '__main__':
-    bot.infinity_polling()
+    bot.polling(none_stop=True)
