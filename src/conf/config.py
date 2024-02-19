@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     # cloudinary_api_key: str = '326488457974591'
     # cloudinary_api_secret: str = 'secret'
     bot_token: str = 'bot_token'
+    mongodb_user: str = 'user'
+    mongodb_password: str = 'password'
+    database_url: str = 'database_url'
+
 
     class Config:
         env_file = ".env"

@@ -29,7 +29,7 @@ class Markup:
         markup_choice_team_name = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn_edit_team_name_1 = types.KeyboardButton(f'Змінити назву для першої команди', )
         btn_edit_team_name_2 = types.KeyboardButton(f'Змінити назву для другої команди')
-        btn_go_to_game = types.KeyboardButton('Все чудово. ПОЇХАЛИ!!!')
+        btn_go_to_game = types.KeyboardButton('Все чудово. Почати гру!')
         markup_choice_team_name.row(btn_edit_team_name_1)
         markup_choice_team_name.row(btn_edit_team_name_2)
         markup_choice_team_name.row(btn_go_to_game)

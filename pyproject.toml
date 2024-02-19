@@ -11,6 +11,8 @@ python = "^3.11"
 pytelegrambotapi = "^4.15.2"
 pydantic = "^2.5.3"
 pydantic-settings = "^2.1.0"
+pymongo = {extras = ["srv", "tls"], version = "^4.6.1"}
+mongoengine = "^0.27.0"
 
 
 [build-system]

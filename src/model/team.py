@@ -4,6 +4,7 @@ class Team():
         self.animal = animal
         self.team_name = f"{self.description} {self.animal}"
         self.current_change_name = False
+        self.current_round = False
 
     def update_team_name(self):
         self.team_name = f"{self.description} {self.animal}"
