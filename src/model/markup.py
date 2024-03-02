@@ -1,7 +1,6 @@
 from telebot import types
 
 from src.data.team_name import ANIMAL, DESCRIPTION
-from src.model.team import TEAM_1, TEAM_2
 
 
 class Markup:
@@ -49,9 +48,11 @@ class Markup:
             markup_animal_list.row(btn_descr, btn_animal)
         return markup_animal_list
 
-
-    # def confirm_team_name(self):
-
+    def ready_to_round(self)-> types.ReplyKeyboardMarkup:
+        markup_ready_to_round = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn_ready_to_round = types.KeyboardButton(f'Почати раунд 🟢')
+        markup_ready_to_round.add(btn_ready_to_round)
+        return markup_ready_to_round
 
 
 markup = Markup()

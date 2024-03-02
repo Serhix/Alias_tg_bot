@@ -16,8 +16,6 @@ from src.database.connect import connect
 BOT_TOKEN = settings.bot_token
 bot = telebot.TeleBot(BOT_TOKEN)
 
-round_timer = 60
-
 
 @bot.message_handler(commands=['start', 'hello'])
 def start(message):
@@ -71,11 +69,30 @@ def main_menu(message):
             reply_markup=markup.choice_list()
         )
     if message.text == 'Все чудово. Почати гру!':
+        bot_user.reset_game_score()
+        game_score(message, bot_user)
         bot.send_message(
             message.chat.id,
-            f""
+            f"""
+            Наступний раунд грає перша команда: 
+            {bot_user.team_1.team_name}"
+        """,
+            reply_markup=markup.ready_to_round()
         )
+        bot_user.round.current_team = bot_user.team_1
 
+    if message.text == 'Почати раунд 🟢':
+        bot.send_message(message.from_user.id, choice(SIMPLE_WORDS), reply_markup=markup.next_word())
+        bot_user.round.score += 1
+        round_timer(message, bot_user)
+
+    if "Наступне слово" in message.text:
+        bot.send_message(message.from_user.id, choice(SIMPLE_WORDS), reply_markup=markup.next_word())
+        bot_user.round.score += 1
+
+    if message.text == "Раунд завершено":
+        bot_user.round.current_team.score = bot_user.round.score
+        
     bot_user.save()
 
 
@@ -125,19 +142,23 @@ def create_new_bot_user(chat_id: int):
     ).save()
 
 
+def round_timer(message, bot_user):
+    timeout = time.time() + bot_user.game_settings.round_duration
+    while time.time() < timeout:
+        pass
+    bot.send_message(message.from_user.id, "Раунд завершено", reply_markup=markup.next_word())
 
-# @bot.message_handler(content_types=['text'])
-# def start_game(message):
-#     if message.text == 'Нова гра':
-        # markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        # btn_next_words = types.KeyboardButton('Наступне слово')
-        # markup.add(btn_next_words)
-        # timeout = time.time() + 60
-        # while time.time() < timeout:
-        #     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        #     btn_next_words = types.KeyboardButton('Наступне слово')
-        #     markup.add(btn_next_words)
-        #     bot.send_message(message.from_user.id, choice(WORDS), reply_markup=markup)
+
+def game_score(message, bot_user):
+    bot.send_message(
+        message.chat.id,
+        f"""
+        Рахунок:
+        {bot_user.team_1.team_name}: {bot_user.team_1.score}
+        {bot_user.team_2.team_name}: {bot_user.team_2.score}
+    """
+    )
+
 
 if __name__ == '__main__':
     bot.polling(none_stop=True)
