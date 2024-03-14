@@ -20,9 +20,6 @@ class Team(EmbeddedDocument):
         self.animal = new_animal
         self.update_team_name()
 
-    def update_score(self, point):
-        self.score = self.score + point
-
 
 class GameSetting(EmbeddedDocument):
     round_duration = IntField(required=True, default=60)
@@ -30,8 +27,12 @@ class GameSetting(EmbeddedDocument):
 
 
 class Round(EmbeddedDocument):
-    current_team = EmbeddedDocumentField(Team, required=True)
+    current_team = EmbeddedDocumentField(Team)
     score = IntField(required=True, default=0)
+
+    def reset_round_score(self):
+        self.score = 0
+
 
 class BotUser(Document):
     chat_id = IntField(required=True)
@@ -43,6 +44,19 @@ class BotUser(Document):
     def reset_game_score(self):
         self.team_1.score = 0
         self.team_2.score = 0
+
+    def update_round_score(self, team_name, points):
+        if team_name == self.team_1.team_name:
+            self.team_1.score += points
+        elif team_name == self.team_2.team_name:
+            self.team_2.score += points
+
+    def change_current_team(self):
+        if self.round.current_team.team_name == self.team_1.team_name:
+            self.round.current_team = self.team_2
+        elif self.round.current_team.team_name == self.team_2.team_name:
+            self.round.current_team = self.team_1
+
 
 
 

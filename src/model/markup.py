@@ -1,13 +1,16 @@
 from telebot import types
 
+from src.data.buttons import buttons
+from src.data.dialogues import dialogues
 from src.data.team_name import ANIMAL, DESCRIPTION
+
 
 
 class Markup:
     def main_menu(self) -> types.ReplyKeyboardMarkup:
         markup_main_menu = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn_rules = types.KeyboardButton('📖 Правила гри')
-        btn_new_game = types.KeyboardButton('🎲 Нова гра')
+        btn_rules = types.KeyboardButton(buttons.rules)
+        btn_new_game = types.KeyboardButton(buttons.new_game)
         markup_main_menu.row(btn_rules)
         markup_main_menu.row(btn_new_game)
         return markup_main_menu
@@ -26,9 +29,9 @@ class Markup:
 
     def choice_team_name(self) -> types.ReplyKeyboardMarkup:
         markup_choice_team_name = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn_edit_team_name_1 = types.KeyboardButton(f'Змінити назву для першої команди', )
-        btn_edit_team_name_2 = types.KeyboardButton(f'Змінити назву для другої команди')
-        btn_go_to_game = types.KeyboardButton('Все чудово. Почати гру!')
+        btn_edit_team_name_1 = types.KeyboardButton(buttons.change_team_name_1)
+        btn_edit_team_name_2 = types.KeyboardButton(buttons.change_team_name_2)
+        btn_go_to_game = types.KeyboardButton(buttons.finish_editing_team_names)
         markup_choice_team_name.row(btn_edit_team_name_1)
         markup_choice_team_name.row(btn_edit_team_name_2)
         markup_choice_team_name.row(btn_go_to_game)
@@ -50,9 +53,15 @@ class Markup:
 
     def ready_to_round(self)-> types.ReplyKeyboardMarkup:
         markup_ready_to_round = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn_ready_to_round = types.KeyboardButton(f'Почати раунд 🟢')
+        btn_ready_to_round = types.KeyboardButton(buttons.start_round)
         markup_ready_to_round.add(btn_ready_to_round)
         return markup_ready_to_round
+
+    def save_round_score(self)-> types.ReplyKeyboardMarkup:
+        markup_save_round_score = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn_save_round_score = types.KeyboardButton(buttons.save_round_score)
+        markup_save_round_score.add(btn_save_round_score)
+        return markup_save_round_score
 
 
 markup = Markup()
