@@ -5,8 +5,10 @@ class Button():
         self.change_team_name_1 = 'Змінити назву першої команди'
         self.change_team_name_2 = 'Змінити назву другої команди'
         self.finish_editing_team_names = 'Чудово. Почати гру!'
-        self.start_round = "Почати раунд 🟢"
-        self.save_round_score = "Зберегти ✅"
+        self.start_round = "🟢 Почати раунд"
+        self.next_word = "🟩 Наступне слово"
+        self.skip_word = "🟥 Пропустити слово"
+        self.save_round_score = "✅ Зберегти"
 
 
 buttons = Button()

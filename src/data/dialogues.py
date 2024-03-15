@@ -24,6 +24,8 @@ class Dialogue():
         self.start_team_1_round = "Наступний раунд грає перша команда"
         self.start_team_2_round = "Наступний раунд грає друга команда"
         self.round_end = "Раунд завершено. Продовжіть відгадувати останнє слово"
+        self.winners = "Переможці"
+        self.draw = "Нічия"
 
 
 

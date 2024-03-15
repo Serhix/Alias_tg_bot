@@ -23,8 +23,9 @@ class Markup:
 
     def next_word(self) -> types.ReplyKeyboardMarkup:
         markup_next_word = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn_next_words = types.KeyboardButton('Наступне слово')
-        markup_next_word.add(btn_next_words)
+        btn_next_words = types.KeyboardButton(buttons.next_word)
+        btn_skip_word = types.KeyboardButton(buttons.skip_word)
+        markup_next_word.add(btn_skip_word, btn_next_words)
         return markup_next_word
 
     def choice_team_name(self) -> types.ReplyKeyboardMarkup:

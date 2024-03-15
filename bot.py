@@ -1,7 +1,6 @@
 import telebot
 import time
 
-from telebot import types
 from random import choice
 
 from src.conf.config import settings
@@ -89,11 +88,17 @@ def main_menu(message):
         print(f'start round{bot_user.round.score}')
         round_timer(message, bot_user)
 
-    if "Наступне слово" in message.text:
+    if message.text == buttons.next_word:
         bot.send_message(message.from_user.id, choice(SIMPLE_WORDS), reply_markup=markup.next_word())
         bot_user.round.score += 1
         bot_user.save()
         print(f'next world{bot_user.round.score}')
+
+    if message.text == buttons.skip_word:
+        bot.send_message(message.from_user.id, choice(SIMPLE_WORDS), reply_markup=markup.next_word())
+        bot_user.round.score -= 1
+        bot_user.save()
+        print(f'skip world{bot_user.round.score}')
 
     if message.text == buttons.save_round_score:
         bot_user.update_round_score(bot_user.round.current_team.team_name, bot_user.round.score)
@@ -120,8 +125,6 @@ def main_menu(message):
             reply_markup=markup.ready_to_round(),
         )
         bot_user.save()
-
-
 
 
 @bot.callback_query_handler(func=lambda callback: True)
@@ -189,37 +192,48 @@ def game_score(message, bot_user):
     """
     )
 
+
 def game_completion_check(message, bot_user):
     if bot_user.round.current_team.team_name == bot_user.team_2.team_name:
-        if bot_user.team_1.score > bot_user.team_2.score and bot_user.team_1.score >= bot_user.game_settings.score_to_win:
+        if (
+            bot_user.team_1.score > bot_user.team_2.score
+            and bot_user.team_1.score >= bot_user.game_settings.score_to_win
+        ):
             bot.send_message(
                 message.chat.id,
                 f"""
-                    перемогла команда: {bot_user.team_1.team_name}
-                    рахунок:
+                    {dialogues.winners}: {bot_user.team_1.team_name}
+                    {dialogues.score}:
                     {bot_user.team_1.team_name}: {bot_user.team_1.score}
                     {bot_user.team_2.team_name}: {bot_user.team_2.score}
-                """
+                """,
             )
-        if bot_user.team_2.score > bot_user.team_1.score and bot_user.team_2.score >= bot_user.game_settings.score_to_win:
+        if (
+            bot_user.team_2.score > bot_user.team_1.score
+            and bot_user.team_2.score >= bot_user.game_settings.score_to_win
+        ):
             bot.send_message(
                 message.chat.id,
                 f"""
-                    перемогла команда: {bot_user.team_2.team_name}
-                    рахунок:
+                    {dialogues.winners}: {bot_user.team_2.team_name}
+                    {dialogues.score}:
                     {bot_user.team_1.team_name}: {bot_user.team_1.score}
                     {bot_user.team_2.team_name}: {bot_user.team_2.score}
-                """
+                """,
             )
-        if bot_user.team_1.score == bot_user.team_2.score == bot_user.game_settings.score_to_win:
+        if (
+            bot_user.team_1.score
+            == bot_user.team_2.score
+            == bot_user.game_settings.score_to_win
+        ):
             bot.send_message(
                 message.chat.id,
                 f"""
-                    Нічия:
-                    рахунок:
+                    {dialogues.draw}
+                    {dialogues.score}:
                     {bot_user.team_1.team_name}: {bot_user.team_1.score}
                     {bot_user.team_2.team_name}: {bot_user.team_2.score}
-                """
+                """,
             )
 
 
