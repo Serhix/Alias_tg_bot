@@ -25,12 +25,12 @@ class Markup:
         btn_score_to_win_setting = types.KeyboardButton(buttons.score_to_win_setting)
         btn_add_score_to_win = types.KeyboardButton(buttons.add_score_to_win)
         btn_subtract_score_to_win = types.KeyboardButton(buttons.subtract_score_to_win)
-        btn_save_settings = types.KeyboardButton(buttons.save_settings)
+        btn_from_settings_to_menu = types.KeyboardButton(buttons.from_settings_to_menu)
         markup_settings.row(btn_round_time_setting)
         markup_settings.row(btn_subtract_round_time, btn_add_round_time)
         markup_settings.row(btn_score_to_win_setting)
         markup_settings.row(btn_subtract_score_to_win, btn_add_score_to_win)
-        markup_settings.row(btn_save_settings)
+        markup_settings.row(btn_from_settings_to_menu)
         return markup_settings
 
     def start_game(self) -> types.ReplyKeyboardMarkup:

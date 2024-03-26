@@ -19,7 +19,7 @@ class Button():
         self.score_to_win_setting = "Кіл. слів до перемоги"
         self.add_score_to_win = "+10 слів"
         self.subtract_score_to_win = "-10 слів"
-        self.save_settings = "🛠️ Зберегти налашт."
+        self.from_settings_to_menu = "🏠 Повернутись до меню"
 
 
 buttons = Button()

@@ -54,9 +54,60 @@ def main_menu(message):
     if message.text == buttons.settings:
         bot.send_message(
             message.chat.id,
-            dialogues.change_team_name,
+            f"""
+        {dialogues.current_settings}:
+        {dialogues.score_to_win} {dialogues.score_to_win_additional}: {bot_user.game_settings.score_to_win}
+        {dialogues.round_time} {dialogues.round_time_additional}: {bot_user.game_settings.round_duration}
+        """,
             reply_markup=markup.settings()
         )
+
+    if message.text == buttons.round_time_setting:
+        bot.send_message(
+            message.chat.id,
+            f"{dialogues.round_time}: {bot_user.game_settings.round_duration}"
+        )
+
+    if message.text == buttons.score_to_win_setting:
+        bot.send_message(
+            message.chat.id,
+            f"{dialogues.score_to_win}: {bot_user.game_settings.score_to_win}"
+        )
+
+    if message.text == buttons.add_round_time:
+        bot_user.game_settings.round_duration += 10
+        bot_user.save()
+        bot.send_message(
+            message.chat.id,
+            f"{dialogues.round_time}: {bot_user.game_settings.round_duration}"
+        )
+
+    if message.text == buttons.subtract_round_time:
+        bot_user.game_settings.round_duration -= 10
+        bot_user.save()
+        bot.send_message(
+            message.chat.id,
+            f"{dialogues.round_time}: {bot_user.game_settings.round_duration}"
+        )
+
+    if message.text == buttons.add_score_to_win:
+        bot_user.game_settings.score_to_win += 10
+        bot_user.save()
+        bot.send_message(
+            message.chat.id,
+            f"{dialogues.score_to_win}: {bot_user.game_settings.score_to_win}"
+        )
+
+    if message.text == buttons.subtract_score_to_win:
+        bot_user.game_settings.score_to_win -= 10
+        bot_user.save()
+        bot.send_message(
+            message.chat.id,
+            f"{dialogues.score_to_win}: {bot_user.game_settings.score_to_win}"
+        )
+
+    if message.text == buttons.from_settings_to_menu:
+        bot.send_message(message.chat.id, dialogues.settings_saved, reply_markup=markup.main_menu())
 
     if message.text == buttons.change_team_name_1:
         bot_user.team_1.current_change_name = True
