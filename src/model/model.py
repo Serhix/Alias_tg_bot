@@ -1,5 +1,5 @@
 from mongoengine import Document, EmbeddedDocument
-from mongoengine.fields import StringField, IntField, BooleanField, EmbeddedDocumentField, ReferenceField, ListField
+from mongoengine.fields import StringField, IntField, BooleanField, EmbeddedDocumentField, ListField
 
 
 class Team(EmbeddedDocument):
@@ -22,16 +22,24 @@ class Team(EmbeddedDocument):
 
 
 class GameSetting(EmbeddedDocument):
-    round_duration = IntField(required=True, default=60)
-    score_to_win = IntField(required=True, default=50)
+    round_duration = IntField(required=True, default=20) #для тесту взято 20, виправити в кінці на 60 секунд
+    score_to_win = IntField(required=True, default=15) #для тесту взято 15, виправити в кінці на 50
+
+
+class Word(EmbeddedDocument):
+    value = StringField(required=True)
+    guessed = BooleanField(required=True, default=True)
 
 
 class Round(EmbeddedDocument):
     current_team = EmbeddedDocumentField(Team)
     score = IntField(required=True, default=0)
+    pool_of_words = ListField(EmbeddedDocumentField(Word, required=True))
+    active = BooleanField(required=True, default=False)
 
-    def reset_round_score(self):
+    def reset_round(self):
         self.score = 0
+        self.pool_of_words = []
 
 
 class BotUser(Document):
@@ -56,7 +64,4 @@ class BotUser(Document):
             self.round.current_team = self.team_2
         elif self.round.current_team.team_name == self.team_2.team_name:
             self.round.current_team = self.team_1
-
-
-
 

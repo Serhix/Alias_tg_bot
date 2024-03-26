@@ -11,9 +11,27 @@ class Markup:
         markup_main_menu = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn_rules = types.KeyboardButton(buttons.rules)
         btn_new_game = types.KeyboardButton(buttons.new_game)
+        btn_settings = types.KeyboardButton(buttons.settings)
         markup_main_menu.row(btn_rules)
         markup_main_menu.row(btn_new_game)
+        markup_main_menu.row(btn_settings)
         return markup_main_menu
+
+    def settings(self) -> types.ReplyKeyboardMarkup:
+        markup_settings = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn_round_time_setting = types.KeyboardButton(buttons.round_time_setting)
+        btn_add_round_time = types.KeyboardButton(buttons.add_round_time)
+        btn_subtract_round_time = types.KeyboardButton(buttons.subtract_round_time)
+        btn_score_to_win_setting = types.KeyboardButton(buttons.score_to_win_setting)
+        btn_add_score_to_win = types.KeyboardButton(buttons.add_score_to_win)
+        btn_subtract_score_to_win = types.KeyboardButton(buttons.subtract_score_to_win)
+        btn_save_settings = types.KeyboardButton(buttons.save_settings)
+        markup_settings.row(btn_round_time_setting)
+        markup_settings.row(btn_subtract_round_time, btn_add_round_time)
+        markup_settings.row(btn_score_to_win_setting)
+        markup_settings.row(btn_subtract_score_to_win, btn_add_score_to_win)
+        markup_settings.row(btn_save_settings)
+        return markup_settings
 
     def start_game(self) -> types.ReplyKeyboardMarkup:
         markup_start_game = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -58,11 +76,30 @@ class Markup:
         markup_ready_to_round.add(btn_ready_to_round)
         return markup_ready_to_round
 
+    def end_of_round(self) -> types.ReplyKeyboardMarkup:
+        markup_end_of_round = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn_end_of_round = types.KeyboardButton(buttons.end_of_round)
+        markup_end_of_round.add(btn_end_of_round)
+        return markup_end_of_round
+
     def save_round_score(self)-> types.ReplyKeyboardMarkup:
         markup_save_round_score = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn_save_round_score = types.KeyboardButton(buttons.save_round_score)
         markup_save_round_score.add(btn_save_round_score)
         return markup_save_round_score
+
+    def guessed_word(self, index: int) -> types.InlineKeyboardMarkup:
+        markup_guessed_word = types.InlineKeyboardMarkup(row_width=2)
+        btn_cancel_points = types.InlineKeyboardButton(
+                f"{buttons.cancel_points}",
+                callback_data=f"cancel_points|{index}"
+            )
+        btn_add_points = types.InlineKeyboardButton(
+                f"{buttons.add_points}",
+                callback_data=f"add_points|{index}"
+            )
+        markup_guessed_word.row(btn_add_points, btn_cancel_points)
+        return markup_guessed_word
 
 
 markup = Markup()
