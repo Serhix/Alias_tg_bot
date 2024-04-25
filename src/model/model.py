@@ -48,6 +48,7 @@ class BotUser(Document):
     team_2 = EmbeddedDocumentField(Team, required=True)
     game_settings = EmbeddedDocumentField(GameSetting, required=True)
     round = EmbeddedDocumentField(Round, required=True)
+    pull_for_clean_chat = ListField()
 
     def reset_game_score(self):
         self.team_1.score = 0
