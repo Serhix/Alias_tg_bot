@@ -65,4 +65,3 @@ class BotUser(Document):
             self.round.current_team = self.team_2
         elif self.round.current_team.team_name == self.team_2.team_name:
             self.round.current_team = self.team_1
-

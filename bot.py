@@ -304,7 +304,7 @@ def game_score(message, bot_user):
     bot_user.save()
 
 
-def list_of_words(message, bot_user):
+def list_of_words(message, bot_user: BotUser):
     for words_index in range(len(bot_user.round.pool_of_words)):
         color_indicator = dialogues.color_indicator_true if bot_user.round.pool_of_words[words_index].guessed \
             else dialogues.color_indicator_false
@@ -325,6 +325,16 @@ def calculation_round_results(pool_of_words: list[Word]) -> int:
         else:
             score -= 1
     return score
+
+
+def clean_chat(bot_user: BotUser):
+    for message_id in bot_user.pull_for_clean_chat:
+        try:
+            bot.delete_messages(message_id)
+        except:
+            pass
+
+    bot_user.pull_for_clean_chat = []
 
 
 def game_completion_check(message, bot_user) -> bool:
